@@ -61,9 +61,11 @@ class Read extends AbstractCRUD
 
 
         if($paginator->isActive()) {
-            $sql = 'SELECT COUNT(t.' . $mapItem->getIdField() .') FROM ' . $mapItem->getEntityClass() . ' t';
-            $query = $this->mapper->getEm()->createQuery($sql);
-            $count = $query->getSingleScalarResult();
+            //$sql = 'SELECT COUNT(t.' . $mapItem->getIdField() .') FROM ' . $mapItem->getEntityClass() . ' t';
+            //$query = $this->mapper->getEm()->createQuery($sql);
+            $query = clone $filter->getQb();
+            $query->select($query->expr()->count('t.'.$mapItem->getIdField()));
+            $count = $query->getQuery()->getSingleScalarResult();
             $paginator->setCount($count);
 
         }

@@ -64,6 +64,14 @@ class Create extends AbstractCRUD
                 }
             }
 
+            //Manage Date mapping
+            $annotations = $reader->getPropertyAnnotation($reflection->getProperty($attribute),'Doctrine\ORM\Mapping\Column');
+            if(!is_null($annotations)){
+                if($annotations->type==='datetime'||$annotations->type==='date'){
+                    $value = new \DateTime($value);
+                }
+            }
+
             // Update value
             ClassHelper::setPropertyValue($entity, $attribute, $value);
         }
@@ -94,7 +102,7 @@ class Create extends AbstractCRUD
                         $relatedProperty->add($reference);
                     }
                 } else {
-                    ClassHelper::setPropertyValue($entity, $relatedProperty, $reference);
+                    ClassHelper::setPropertyValue($entity, $relatedType, $reference);
                 }
             }
         }

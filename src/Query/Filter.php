@@ -96,16 +96,21 @@ class Filter
      */
     private function addFilter($property, $condition, $value, $where = 'and')
     {
-        if(!method_exists('Doctrine\ORM\Query\Expr', $condition)) {
-            throw new JadException('Filter condition [' . $condition . '] not available.');
+        if($condition != 'like') {
+            if (!method_exists('Doctrine\ORM\Query\Expr', $condition)) {
+                throw new JadException('Filter condition [' . $condition . '] not available.');
+            }
         }
 
         $field = Text::deKebabify($property);
         $fieldName = $field . '_' . uniqid();
 
         $whereCondition = $where === 'and' ? 'andWhere' : 'orWhere';
-
-        $this->qb->$whereCondition($this->qb->expr()->$condition('t.' . $field, ':' . $fieldName));
+        if($condition=='like'){
+            $this->qb->$whereCondition('t.'.$field.' LIKE :'.$fieldName);
+        }else{
+            $this->qb->$whereCondition($this->qb->expr()->$condition('t.' . $field, ':' . $fieldName));
+        }
         $this->qb->setParameter($fieldName, $value);
     }
 }
