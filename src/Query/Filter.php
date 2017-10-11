@@ -78,11 +78,10 @@ class Filter
     private function addConditionalFilter()
     {
         foreach($this->filter as $propertyConditional => $value) {
-            $property = array_keys($value)[0];
-            $conditions = $value[$property];
-
-            foreach($conditions as $condition => $val) {
-                $this->addFilter($property, $condition, $val, $propertyConditional);
+            foreach ($value as $property => $conditions) {
+                foreach ($conditions as $condition => $val) {
+                    $this->addFilter($property, $condition, $val, $propertyConditional);
+                }
             }
         }
     }
